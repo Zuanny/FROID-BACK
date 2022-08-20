@@ -5,7 +5,7 @@ const { schemaCadastroUsuario, schemaAtualizarUsuario } = require('../validacoes
 
 const listarUsarios = async (req, res) => {
     try {
-        let usuarios = await knex('usuarios');
+        let usuarios = await knex('usuarios').select('nome','email','nome_completo','data_cadastro');
     return res.status(200).json(usuarios)
     } catch (error) {
         return res.status(500).json({mensagem: error.message})
