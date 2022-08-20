@@ -1,9 +1,18 @@
 const express = require('express')
 const rotas = express()
 
-// rotas.post()
-// rotas.get()
-// rotas.patch()
-// rotas.delete()
+const {
+    listarVeiculos,
+    listarVeiculosId,
+    cadastrarVeiculo,
+    editarVeiculo,
+    excluirVeiculo
+} = require('../controladores/veiculo')
+
+rotas.get('/',listarVeiculos )
+rotas.get('/:id', listarVeiculosId)
+rotas.post('/', cadastrarVeiculo)
+rotas.patch('/:id', editarVeiculo)
+rotas.delete('/:id', excluirVeiculo)
 
 module.exports =  rotas
