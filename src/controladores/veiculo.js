@@ -36,12 +36,12 @@ const cadastrarVeiculo = async (req, res) => {
 
   try {
 
-    let NovoModeloVeiculo = { ...req.body}
+    let NovoVeiculo = { ...req.body}
     
 
-    let veiculos_modelo = await knex('veiculos_modelo')
-      .insert(NovoModeloVeiculo)
-    if (veiculos_modelo) {
+    let veiculos = await knex('veiculos')
+      .insert(NovoVeiculo)
+    if (veiculos) {
       return res.status(200).json({mensagem: "Cadastro efetuado"})
     }
 
@@ -71,7 +71,7 @@ const editarVeiculo= async (req, res) => {
   try {
     await schemaAtualizarVeiculos.validate(req.body);
     
-    const VeiculoCadastrado = await knex('veiculos_modelo')
+    const VeiculoCadastrado = await knex('veiculos')
       .where({ id })
       .select('*')
       .first()
@@ -88,7 +88,7 @@ const editarVeiculo= async (req, res) => {
    if(!VeiculoAtualizado){
     res.status(400).json({mensagem: "Veículo não foi atualizado"})
    }
-
+   return res.status(203).json({mensagme:`Veículo com id ${id} atualizado`})
   } catch (error) {
     return res.status(500).json({ mensagem: error.message })
   };
@@ -97,7 +97,7 @@ const editarVeiculo= async (req, res) => {
 const excluirVeiculo = async (req, res)=> {
     let { id } = req.params;
     try {
-        let Veiculo = await knex('veiculos').where('id',id)
+        let Veiculo = await knex('veiculos').where('id',id).first()
         if(!Veiculo){
             return res.status(404).json({mensagem: 'Veiculo não encontrado'})
         }
