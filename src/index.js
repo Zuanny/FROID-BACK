@@ -8,7 +8,13 @@ const login = require('./rotas/login')
 const veiculo = require('./rotas/veiculo')
 const veiculoModel = require('./rotas/veiculoModel')
 const validarToken = require('./intermediarios/validarToken')
+const cors = require('cors')
 
+const corsOptions = {
+    exposedHeaders: ["x-access-token"],
+  };
+  
+app.use(cors(corsOptions));
 
 app.use(express.json())
 app.use('/login',login)

@@ -3,9 +3,12 @@ const jwtSecret = process.env.JWT_PASSWORD;
 
 
 const validarToken = (req, res, next) => {
-    const { authorization } = req.headers;
+    
+   let {authorization} =  req.headers
+   
     let usuario
-
+    // console.log( req.headers);
+    
     if(!authorization){
         return res.status(403).json({menssagem: "Você precisa fazer login e informar o token para acessar essa rota"})
     }

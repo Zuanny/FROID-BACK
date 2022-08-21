@@ -1,46 +1,60 @@
-create database froid;
 
+create database froid;
 use froid;
 
-create table veiculos_modelo (
-id int NOT NULL auto_increment primary key,
-model text not null,
-volume_total_vendas int not null,
-conectado int not null,
-atualizacao_software int not null
+CREATE TABLE IF NOT EXISTS user (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(30) NOT NULL UNIQUE, 
+    email VARCHAR(255) NOT NULL, 
+    password VARCHAR(255) NOT NULL,
+    full_name VARCHAR(255) NOT NULL, 
+    join_date TIMESTAMP DEFAULT current_timestamp
 );
 
-create table veiculos (
-id int NOT NULL auto_increment primary key,
-vin text not null,
-pressao_pneu int not null,
-status_veiculo text not null,
-status_bateria text not null,
-nivel_combustivel int not null,
-latitude float not null,
-longitude float not null,
-check (status_veiculo = 'on' or status_veiculo = 'off' )
-);
+CREATE TABLE IF NOT EXISTS VEHICLE (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    model TEXT DEFAULT ('') NOT NULL, 
+    volumetotal INTEGER,
+    connected INTEGER,
+    softwareUpdates INTEGER
+)
 
-create table usuarios (
-id int NOT NULL auto_increment primary key,
-nome varchar(50) not null,
-email varchar(150) not null,
-senha text not null,
-nome_completo text not null,
-data_cadastro timestamp default CURRENT_TIMESTAMP
-);
+CREATE TABLE IF NOT EXISTS VEHICLEDATA (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    vin VARCHAR(20) NOT NULL UNIQUE, 
+    odometer VARCHAR(30) DEFAULT ('') NOT NULL, 
+    tirePressure VARCHAR(30) DEFAULT ('') NOT NULL,
+    status VARCHAR(30) DEFAULT ('') NOT NULL,
+    batteryStatus VARCHAR(30) DEFAULT ('') NOT NULL,
+    fuelLevel VARCHAR(30) DEFAULT ('') NOT NULL,
+    latitude VARCHAR(30) DEFAULT ('') NOT NULL,
+    longitude VARCHAR(30) DEFAULT ('') NOT null,
+    vehicle_id INTEGER,
+    FOREIGN KEY (vehicle_id) REFERENCES VEHICLE(id)
+)
 
-INSERT INTO froid.veiculos_modelo
-(model, volume_total_vendas, conectado, atualizacao_software)
-VALUES ('Ranger', 145760, 70000, 27550),
- ('Mustang', 1500, 500, 750),
- ('Territory', 4560, 4000, 3050),
- ('Bronco Sport', 7560, 4060, 20500);
 
-INSERT INTO froid.veiculos
-(vin, pressao_pneu, status_veiculo, status_bateria, nivel_combustivel, latitude, longitude)
-VALUES('2FRHDUYS2Y63NHD22454', 23344, 'on', 'Ok', 76,-12.2322, -35.2314),
-('2RFAASDY54E4HDU34874', 130000, 'off', 'Recharge', 19,-12.2322, -35.2314),
-('2FRHDUYS2Y63NHD22455', 50000,  'on', 'Ok', 90,-12.2322, -35.2314),
-('2RFAASDY54E4HDU34875', 10000, 'off', 'Ok', 25,-12.2322, -35.2314)
+
+INSERT INTO VEHICLE (
+    model, 
+    volumetotal,
+    connected,
+    softwareUpdates
+) values ('Ranger', 145760, 70000, 27550), ('Mustang', 1500, 500, 750), ('Territory', 4560, 4000, 3050),
+('Bronco Sport', 7560, 4060, 2050);
+
+
+INSERT INTO VEHICLEDATA (
+    vin, 
+    odometer, 
+    tirePressure,
+    status,
+    batteryStatus,
+    fuelLevel,
+    latitude,
+    longitude,
+    vehicle_id
+) values ('2FRHDUYS2Y63NHD22454', '23344', '36,36,35,34', 'on', 'Ok', '76','-12,2322', '-35,2314', 1),
+('2RFAASDY54E4HDU34874', '130000', '36,34,36,33', 'off', 'Recharge', '19','-12,2322', '-35,2314', 2),
+('2FRHDUYS2Y63NHD22455', '50000', '36,36,35,34', 'on', 'Ok', '90','-12,2322', '-35,2314', 3),
+('2RFAASDY54E4HDU34875', '10000', '36,34,36,33', 'off', 'Ok', '25','-12,2322', '-35,2314',4)

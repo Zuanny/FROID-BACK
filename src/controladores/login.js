@@ -32,8 +32,10 @@ const login = async (req, res) => {
     const token = jwt.sign({ usuario }, process.env.JWT_PASSWORD, {
       expiresIn: '24h'
     })
-
-    return res.status(200).json({ usuario, token: token })
+    
+    res.set("x-access-token", token)
+    
+    return res.status(200).json({ usuario, token})
   } catch (error) {
     return res.status(400).json({ mensagem: error.message })
   }
