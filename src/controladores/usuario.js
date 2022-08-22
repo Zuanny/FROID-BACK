@@ -5,7 +5,7 @@ const { schemaCadastroUsuario, schemaAtualizarUsuario } = require('../validacoes
 
 const listarUsarios = async (req, res) => {
     try {
-        let usuarios = await knex('usuarios').select('nome','email','nome_completo','data_cadastro');
+        let usuarios = await knex('user').select('name','email','full_name','join_date');
     return res.status(200).json(usuarios)
     } catch (error) {
         return res.status(500).json({mensagem: error.message})
@@ -16,7 +16,7 @@ const listarUsarios = async (req, res) => {
 const listarUsarioId = async (req, res) => {
     let {id} = req.params
     try {
-        let usuario = await knex('usuarios').where({id}).first();
+        let usuario = await knex('user').where({id}).first();
         if(!usuario){
             return res.status(404).json({mensagem: "Não existe usuário cadastrado com esse id"})
         }
@@ -29,12 +29,12 @@ const listarUsarioId = async (req, res) => {
 }
 
 const cadastrarUsuario = async (req, res) => {
-  let { nome, email, senha, nome_completo } = req.body
+  let { name, email, password, full_name } = req.body
 
   try {
     await schemaCadastroUsuario.validate(req.body);
 
-    const emailJaCadastrado = await knex('usuarios').where({ email }).first();
+    const emailJaCadastrado = await knex('user').where({ email }).first();
 
     if (emailJaCadastrado) {
       return res
@@ -49,16 +49,16 @@ const cadastrarUsuario = async (req, res) => {
   }
 
   try {
-    let senhaHash = await bcrypt.hash(senha, 10)
+    let senhaHash = await bcrypt.hash(password, 10)
 
     let novoUsuario = {
-      nome,
+      name,
       email,
-      senha: senhaHash,
-      nome_completo
+      password: senhaHash,
+      full_name
     }
 
-    let usuario = await knex('usuarios')
+    let usuario = await knex('user')
       .insert(novoUsuario)
     if (usuario) {
       return res.status(200).json({mensagem: "Cadastro efetuado"})
@@ -73,13 +73,13 @@ const cadastrarUsuario = async (req, res) => {
 
 const editarUsuario = async (req, res) => {
   let { id } = req.params;
-  let { nome, email, senha } = req.body;
+  let { name, email, password } = req.body;
 
   
   let user = {}
   try {
     await schemaAtualizarUsuario.validate(req.body);
-    const usuarioCadastrado = await knex('usuarios')
+    const usuarioCadastrado = await knex('user')
       .where({ id })
       .select('*')
       .first()
@@ -87,7 +87,7 @@ const editarUsuario = async (req, res) => {
     if (email) {
 
       if (usuarioCadastrado.email != email) {
-        let emailExiste = await knex('usuarios')
+        let emailExiste = await knex('user')
           .where({ email })
           .select('*')
           .first()
@@ -99,21 +99,21 @@ const editarUsuario = async (req, res) => {
       user.email = email
     }
 
-    if (nome) {
-      user.nome = nome
+    if (name) {
+      user.name = name
     }
 
-    if (senha) {
-      let senhaHash = await bcrypt.hash(senha, 10)
-      user.senha = senhaHash
+    if (password) {
+      let senhaHash = await bcrypt.hash(password, 10)
+      user.password = senhaHash
     }
 
-    let usuario = await knex('usuarios')
+    let usuario = await knex('user')
       .where({ id })
       .update(user)
 
     if (usuario) {
-        let {senha, ...usuario} = user
+        let {password, ...usuario} = user
       return res.status(200).json(usuario)
     }
 
@@ -125,11 +125,11 @@ const editarUsuario = async (req, res) => {
 const excluirUsuario = async (req, res)=> {
     let { id } = req.params;
     try {
-        let usuario = await knex('usuarios').where('id',id)
+        let usuario = await knex('user').where('id',id)
         if(!usuario){
             return res.status(404).json({mensagem: 'Usuario não encontrado'})
         }
-        await knex('usuarios').where('id',id).del()
+        await knex('user').where('id',id).del()
         return res.status(202).json({mensagme: `Usuario com id: ${id} foi excluido`})
         
     } catch (error) {

@@ -4,7 +4,7 @@ const { schemaCadastroVeiculos, schemaAtualizarVeiculos } = require('../validaco
 
 const listarVeiculos = async (req, res) => {
     try {
-        let veiculos = await knex('veiculos');
+        let veiculos = await knex('vehicledata');
     return res.status(200).json(veiculos)
     } catch (error) {
         return res.status(500).json({mensagem: error.message})
@@ -15,7 +15,7 @@ const listarVeiculos = async (req, res) => {
 const listarVeiculosId = async (req, res) => {
     let {id} = req.params
     try {
-        let veiculo = await knex('veiculos').where({id}).first();
+        let veiculo = await knex('vehicledata').where({id}).first();
         if(!veiculo){
             return res.status(404).json({mensagem: "Não existe veiculo cadastrado com esse id"})
         }
@@ -39,7 +39,7 @@ const cadastrarVeiculo = async (req, res) => {
     let NovoVeiculo = { ...req.body}
     
 
-    let veiculos = await knex('veiculos')
+    let veiculos = await knex('vehicledata')
       .insert(NovoVeiculo)
     if (veiculos) {
       return res.status(200).json({mensagem: "Cadastro efetuado"})
@@ -71,7 +71,7 @@ const editarVeiculo= async (req, res) => {
   try {
     await schemaAtualizarVeiculos.validate(req.body);
     
-    const VeiculoCadastrado = await knex('veiculos')
+    const VeiculoCadastrado = await knex('vehicledata')
       .where({ id })
       .select('*')
       .first()
@@ -81,7 +81,7 @@ const editarVeiculo= async (req, res) => {
     }
    
 
-    let VeiculoAtualizado = await knex('veiculos')
+    let VeiculoAtualizado = await knex('vehicledata')
       .where({ id })
       .update(Veiculo)
 
@@ -97,11 +97,11 @@ const editarVeiculo= async (req, res) => {
 const excluirVeiculo = async (req, res)=> {
     let { id } = req.params;
     try {
-        let Veiculo = await knex('veiculos').where('id',id).first()
+        let Veiculo = await knex('vehicledata').where('id',id).first()
         if(!Veiculo){
             return res.status(404).json({mensagem: 'Veiculo não encontrado'})
         }
-        await knex('veiculos').where('id',id).del()
+        await knex('vehicledata').where('id',id).del()
         return res.status(202).json({mensagme: `Veiculo com id: ${id} foi excluido`})
         
     } catch (error) {

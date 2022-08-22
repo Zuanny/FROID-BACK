@@ -5,7 +5,7 @@ const app = express()
 
 const usuario = require('./rotas/usuario')
 const login = require('./rotas/login')
-const veiculo = require('./rotas/veiculo')
+const veiculo = require('./rotas/veiculoData')
 const veiculoModel = require('./rotas/veiculoModel')
 const validarToken = require('./intermediarios/validarToken')
 const cors = require('cors')

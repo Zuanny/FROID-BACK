@@ -7,7 +7,7 @@ const {
     cadastrarVeiculo,
     editarVeiculo,
     excluirVeiculo
-} = require('../controladores/veiculo')
+} = require('../controladores/veiculoData')
 
 rotas.get('/',listarVeiculos )
 rotas.get('/:id', listarVeiculosId)

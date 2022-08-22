@@ -4,30 +4,30 @@ const jwt = require('jsonwebtoken')
 const schemaLogin = require('../validacoes/schemaLogin.js')
 
 const login = async (req, res) => {
-  let { email, senha: atual } = req.body
+  let { name, password: atual } = req.body
 
   await schemaLogin.validate(req.body)
 
   try {
-    const usuarioCadastrado = await knex('usuarios')
-      .where({ email })
+    const usuarioCadastrado = await knex('user')
+      .where({ name })
       .select('*').first()
 
     if (!usuarioCadastrado) {
       return res.status(404).json({
-        mensagem: 'Email ou Senha incorretos'
+        mensagem: 'Usuario ou Senha incorretos'
       })
     }
 
-    let senhaEhCorreta = await bcrypt.compare(atual, usuarioCadastrado.senha)
+    let senhaEhCorreta = await bcrypt.compare(atual, usuarioCadastrado.password)
 
     if (!senhaEhCorreta) {
       return res.status(404).json({
-        mensagem: 'Email ou Senha incorretos'
+        mensagem: 'Usuario ou Senha incorretos'
       })
     }
 
-    let { senha, ...usuario } = usuarioCadastrado
+    let { password, ...usuario } = usuarioCadastrado
 
     const token = jwt.sign({ usuario }, process.env.JWT_PASSWORD, {
       expiresIn: '24h'
